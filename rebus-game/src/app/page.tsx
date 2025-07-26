@@ -48,7 +48,7 @@ export default function Home() {
         
         {/* Footer text */}
         <p className="text-gray-500 text-sm mt-6 sm:mt-8">
-          🇫🇷 Célébrités françaises • 📱 Compatible mobile • 🆓 Gratuit
+          ⭐ Célébrités • 🦁 Animaux • 📱 Compatible mobile • 🆓 Gratuit
         </p>
       </div>
     </div>

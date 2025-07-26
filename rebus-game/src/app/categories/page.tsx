@@ -17,7 +17,7 @@ export default function CategoriesPage() {
         </div>
         
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
           {categories.map((category, index) => (
             <div key={category.id} className="relative group">
               {category.enabled ? (
@@ -25,13 +25,21 @@ export default function CategoriesPage() {
                   href={`/jeu?categorie=${category.id}`}
                   className="block game-card rounded-xl hover:shadow-xl transition-all duration-300 p-4 sm:p-6 border-2 border-transparent hover:border-indigo-200 min-h-[120px] sm:min-h-[140px] flex flex-col justify-center group-hover:scale-105"
                 >
-                  <div className="text-2xl sm:text-3xl mb-2">⭐</div>
+                  <div className="text-2xl sm:text-3xl mb-2">
+                    {category.id === 'celebrite' && '⭐'}
+                    {category.id === 'animal' && '🦁'}
+                    {category.id === 'film' && '🎬'}
+                    {category.id === 'metier' && '👔'}
+                    {category.id === 'ville' && '🏙️'}
+                  </div>
                   <h2 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
                     {category.name}
                   </h2>
-                  <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
-                    5 rébus à deviner
-                  </p>
+                                     <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
+                     {category.id === 'celebrite' && '12 rébus à deviner'}
+                     {category.id === 'animal' && '6 rébus à deviner'}
+                     {!['celebrite', 'animal'].includes(category.id) && '5 rébus à deviner'}
+                   </p>
                   <div className="text-xs text-indigo-600 font-medium bg-indigo-50 px-2 py-1 rounded-full inline-block">
                     🎮 Disponible
                   </div>
@@ -40,7 +48,11 @@ export default function CategoriesPage() {
                 <div className="block glass-card rounded-xl p-4 sm:p-6 border-2 border-white/10 cursor-not-allowed opacity-60 min-h-[120px] sm:min-h-[140px] flex flex-col justify-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-100/50 to-gray-200/50"></div>
                   <div className="relative z-10">
-                    <div className="text-2xl sm:text-3xl mb-2">🔒</div>
+                    <div className="text-2xl sm:text-3xl mb-2">
+                      {category.id === 'film' && '🎬'}
+                      {category.id === 'metier' && '👔'}
+                      {category.id === 'ville' && '🏙️'}
+                    </div>
                     <h2 className="text-base sm:text-lg font-bold text-gray-500 mb-1 sm:mb-2">
                       {category.name}
                     </h2>

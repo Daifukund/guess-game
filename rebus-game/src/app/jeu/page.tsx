@@ -224,8 +224,12 @@ function JeuGameComponent() {
         {/* Image du rébus */}
         <div className="game-card rounded-xl p-3 sm:p-4 md:p-6 mb-3 sm:mb-4 md:mb-6 text-center">
           <div className="text-base sm:text-lg md:text-xl font-bold text-gray-800 mb-2 sm:mb-3 md:mb-4 flex items-center justify-center gap-2">
-            <span className="text-xl sm:text-2xl">🔍</span>
-            Qui suis-je ?
+            <span className="text-xl sm:text-2xl">
+              {categorie === 'celebrite' && '⭐'}
+              {categorie === 'animal' && '🦁'}
+              {!['celebrite', 'animal'].includes(categorie || '') && '🔍'}
+            </span>
+            {categorie === 'animal' ? 'Quel animal suis-je ?' : 'Qui suis-je ?'}
           </div>
           <div className="relative w-full h-40 sm:h-48 md:h-64 lg:h-80 mb-3 sm:mb-4 md:mb-6 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 shadow-inner">
             <Image

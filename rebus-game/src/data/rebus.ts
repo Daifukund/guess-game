@@ -90,11 +90,54 @@ export const rebus: Rebus[] = [
     image: "/rebus/celebrite/booba.jpg",
     answer: "booba",
     hint: "Rappeur français, surnommé le 'Duc de Boulogne'"
+  },
+  {
+    id: 13,
+    category: "animal",
+    image: "/rebus/animal/gazelle.jpg",
+    answer: "gazelle",
+    hint: "Antilope gracieuse et rapide d'Afrique"
+  },
+  {
+    id: 14,
+    category: "animal",
+    image: "/rebus/animal/serpent.jpg",
+    answer: "serpent",
+    hint: "Reptile sans pattes qui rampe"
+  },
+  {
+    id: 15,
+    category: "animal",
+    image: "/rebus/animal/herisson.jpg",
+    answer: "hérisson",
+    hint: "Petit mammifère avec des piquants"
+  },
+  {
+    id: 16,
+    category: "animal",
+    image: "/rebus/animal/etourneau.jpg",
+    answer: "étourneau",
+    hint: "Petit oiseau noir avec des reflets métalliques"
+  },
+  {
+    id: 17,
+    category: "animal",
+    image: "/rebus/animal/elephant.jpg",
+    answer: "éléphant",
+    hint: "Le plus gros mammifère terrestre avec une trompe"
+  },
+  {
+    id: 18,
+    category: "animal",
+    image: "/rebus/animal/singe.jpg",
+    answer: "singe",
+    hint: "Primate intelligent qui vit dans les arbres"
   }
 ];
 
 export const categories = [
   { id: "celebrite", name: "Célébrités", enabled: true },
+  { id: "animal", name: "Animaux", enabled: true },
   { id: "film", name: "Films & Dessins Animés", enabled: false },
   { id: "metier", name: "Métiers", enabled: false },
   { id: "ville", name: "Villes & Pays", enabled: false }
