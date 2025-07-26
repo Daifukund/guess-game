@@ -13,7 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
+      <body className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 overflow-x-hidden">
         {children}
       </body>
     </html>

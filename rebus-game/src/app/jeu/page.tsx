@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getRandomRebus, normalizeAnswer, type Rebus } from '@/data/rebus';
 
-export default function JeuPage() {
+function JeuGameComponent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const categorie = searchParams.get('categorie');
@@ -17,6 +17,7 @@ export default function JeuPage() {
   const [userAnswer, setUserAnswer] = useState('');
   const [showHint, setShowHint] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
   const [gameFinished, setGameFinished] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -40,10 +41,13 @@ export default function JeuPage() {
     const normalized = normalizeAnswer(userAnswer);
     const correctAnswer = normalizeAnswer(currentRebus.answer);
     
-    if (normalized === correctAnswer) {
+    const isCorrect = normalized === correctAnswer;
+    
+    if (isCorrect) {
       setScore(score + 1);
     }
     
+    setIsCorrectAnswer(isCorrect);
     setShowAnswer(true);
     setTimeout(nextRebus, 2000);
   };
@@ -54,6 +58,7 @@ export default function JeuPage() {
 
   const handleAbandon = () => {
     // Afficher la bonne réponse sans donner de point
+    setIsCorrectAnswer(false);
     setShowAnswer(true);
     // Passer au rébus suivant après 2 secondes
     setTimeout(nextRebus, 2000);
@@ -65,6 +70,7 @@ export default function JeuPage() {
       setUserAnswer('');
       setShowHint(false);
       setShowAnswer(false);
+      setIsCorrectAnswer(false);
     } else {
       setGameFinished(true);
     }
@@ -79,16 +85,17 @@ export default function JeuPage() {
       setUserAnswer('');
       setShowHint(false);
       setShowAnswer(false);
+      setIsCorrectAnswer(false);
       setGameFinished(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-lg text-gray-600">Chargement du jeu...</p>
+          <div className="animate-spin rounded-full h-24 w-24 sm:h-32 sm:w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-base sm:text-lg text-gray-600">Chargement du jeu...</p>
         </div>
       </div>
     );
@@ -96,11 +103,11 @@ export default function JeuPage() {
 
   if (!categorie || gameRebus.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Erreur</h1>
-          <p className="text-gray-600 mb-4">Catégorie non trouvée ou aucun rébus disponible.</p>
-          <Link href="/categories" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="text-center w-full max-w-md mx-auto">
+          <h1 className="text-xl sm:text-2xl font-bold text-red-600 mb-3 sm:mb-4">Erreur</h1>
+          <p className="text-sm sm:text-base text-gray-600 mb-4 px-2">Catégorie non trouvée ou aucun rébus disponible.</p>
+          <Link href="/categories" className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base w-full sm:w-auto inline-block">
             Retour aux catégories
           </Link>
         </div>
@@ -111,28 +118,28 @@ export default function JeuPage() {
   if (gameFinished) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-xl p-8 text-center max-w-md mx-auto">
-          <h1 className="text-3xl font-bold text-green-600 mb-4">🎉 Partie terminée !</h1>
-          <p className="text-xl text-gray-700 mb-6">
+        <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 md:p-8 text-center w-full max-w-md mx-auto">
+          <h1 className="text-2xl sm:text-3xl font-bold text-green-600 mb-3 sm:mb-4">🎉 Partie terminée !</h1>
+          <p className="text-lg sm:text-xl text-gray-700 mb-4 sm:mb-6">
             Tu as trouvé <span className="font-bold text-blue-600">{score}/5</span> rébus !
           </p>
           
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <button
               onClick={resetGame}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-sm sm:text-base"
             >
               Rejouer
             </button>
             <Link
               href="/categories"
-              className="block w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              className="block w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-sm sm:text-base"
             >
               Changer de catégorie
             </Link>
             <Link
               href="/"
-              className="block w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-lg transition-colors"
+              className="block w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-sm sm:text-base"
             >
               Retour à l'accueil
             </Link>
@@ -143,15 +150,15 @@ export default function JeuPage() {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen p-2 sm:p-4">
       <div className="max-w-2xl mx-auto">
         {/* Header avec score et progression */}
-        <div className="bg-white rounded-lg shadow-lg p-4 mb-6">
+        <div className="bg-white rounded-lg shadow-lg p-3 sm:p-4 mb-4 sm:mb-6">
           <div className="flex justify-between items-center">
-            <div className="text-lg font-semibold text-gray-700">
+            <div className="text-sm sm:text-lg font-semibold text-gray-700">
               Rébus {currentIndex + 1}/5
             </div>
-            <div className="text-lg font-bold text-blue-600">
+            <div className="text-sm sm:text-lg font-bold text-blue-600">
               Score: {score}
             </div>
           </div>
@@ -164,8 +171,8 @@ export default function JeuPage() {
         </div>
 
         {/* Image du rébus */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6 text-center">
-          <div className="relative w-full h-64 md:h-80 mb-4">
+        <div className="bg-white rounded-lg shadow-lg p-3 sm:p-6 mb-4 sm:mb-6 text-center">
+          <div className="relative w-full h-48 sm:h-64 md:h-80 mb-3 sm:mb-4">
             <Image
               src={currentRebus.image}
               alt="Rébus à deviner"
@@ -180,17 +187,25 @@ export default function JeuPage() {
           </div>
           
           {showHint && (
-            <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-4">
-              <p className="text-yellow-700">
+            <div className="bg-yellow-100 border-l-4 border-yellow-500 p-3 sm:p-4 mb-3 sm:mb-4">
+              <p className="text-yellow-700 text-sm sm:text-base">
                 <strong>Indice:</strong> {currentRebus.hint}
               </p>
             </div>
           )}
           
           {showAnswer && (
-            <div className="bg-green-100 border-l-4 border-green-500 p-4 mb-4">
-              <p className="text-green-700">
-                <strong>Réponse:</strong> {currentRebus.answer}
+            <div className={`border-l-4 p-3 sm:p-4 mb-3 sm:mb-4 ${
+              isCorrectAnswer 
+                ? 'bg-green-100 border-green-500' 
+                : 'bg-red-100 border-red-500'
+            }`}>
+              <p className={`text-sm sm:text-base ${
+                isCorrectAnswer ? 'text-green-700' : 'text-red-700'
+              }`}>
+                <strong>
+                  {isCorrectAnswer ? '✅ Bravo ! Réponse:' : '❌ Réponse:'}
+                </strong> {currentRebus.answer}
               </p>
             </div>
           )}
@@ -198,8 +213,8 @@ export default function JeuPage() {
 
         {/* Zone de réponse et boutons */}
         {!showAnswer && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="space-y-4">
+          <div className="bg-white rounded-lg shadow-lg p-3 sm:p-6">
+            <div className="space-y-3 sm:space-y-4">
               <div>
                 <label htmlFor="answer" className="block text-sm font-medium text-gray-700 mb-2">
                   Votre réponse:
@@ -210,17 +225,17 @@ export default function JeuPage() {
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleValidate()}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
                   placeholder="Tapez votre réponse..."
                   autoFocus
                 />
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                 <button
                   onClick={handleValidate}
                   disabled={!userAnswer.trim()}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-sm sm:text-base"
                 >
                   Valider
                 </button>
@@ -228,14 +243,14 @@ export default function JeuPage() {
                 <button
                   onClick={handleHint}
                   disabled={showHint}
-                  className="flex-1 bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                  className="bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-400 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-sm sm:text-base"
                 >
                   {showHint ? 'Indice affiché' : 'Indice'}
                 </button>
                 
                 <button
                   onClick={handleAbandon}
-                  className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-sm sm:text-base"
                 >
                   Abandonner
                 </button>
@@ -245,15 +260,34 @@ export default function JeuPage() {
         )}
 
         {/* Bouton retour */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-4 sm:mt-6">
           <Link
             href="/categories"
-            className="inline-block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+            className="inline-block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-sm sm:text-base w-full sm:w-auto"
           >
             Retour aux catégories
           </Link>
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-24 w-24 sm:h-32 sm:w-32 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4 text-base sm:text-lg text-gray-600">Chargement du jeu...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function JeuPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <JeuGameComponent />
+    </Suspense>
   );
 } 
