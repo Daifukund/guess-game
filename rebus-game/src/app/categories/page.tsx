@@ -12,7 +12,7 @@ export default function CategoriesPage() {
             Choisissez une catégorie
           </h1>
           <p className="text-gray-600 text-xs sm:text-sm">
-            Sélectionnez votre thème préféré !
+            Défiez-vous sur TOUS les rébus d'une catégorie !
           </p>
         </div>
         
@@ -28,17 +28,18 @@ export default function CategoriesPage() {
                   <div className="text-2xl sm:text-3xl mb-2">
                     {category.id === 'celebrite' && '⭐'}
                     {category.id === 'animal' && '🦁'}
+                    {category.id === 'pays' && '🌍'}
                     {category.id === 'film' && '🎬'}
                     {category.id === 'metier' && '👔'}
-                    {category.id === 'ville' && '🏙️'}
                   </div>
                   <h2 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
                     {category.name}
                   </h2>
                                      <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
-                     {category.id === 'celebrite' && '12 rébus à deviner'}
-                     {category.id === 'animal' && '6 rébus à deviner'}
-                     {!['celebrite', 'animal'].includes(category.id) && '5 rébus à deviner'}
+                     {category.id === 'celebrite' && 'Tous les 16 rébus'}
+                     {category.id === 'animal' && 'Tous les 17 rébus'}
+                     {category.id === 'pays' && 'Tous les 26 rébus'}
+                     {!['celebrite', 'animal', 'pays'].includes(category.id) && 'Tous les rébus'}
                    </p>
                   <div className="text-xs text-indigo-600 font-medium bg-indigo-50 px-2 py-1 rounded-full inline-block">
                     🎮 Disponible
@@ -51,7 +52,6 @@ export default function CategoriesPage() {
                     <div className="text-2xl sm:text-3xl mb-2">
                       {category.id === 'film' && '🎬'}
                       {category.id === 'metier' && '👔'}
-                      {category.id === 'ville' && '🏙️'}
                     </div>
                     <h2 className="text-base sm:text-lg font-bold text-gray-500 mb-1 sm:mb-2">
                       {category.name}

@@ -27,8 +27,8 @@ export default function Home() {
           {/* Description */}
           <div className="space-y-4 sm:space-y-6">
             <p className="text-base sm:text-lg text-gray-600 leading-relaxed px-2">
-              ✨ Découvrez qui se cache derrière ces rébus visuels !<br/>
-              🎯 Choisissez une catégorie et testez vos connaissances.
+              ✨ Découvrez ce qui se cache derrière ces rébus visuels !<br/>
+              🎯 Défiez-vous sur TOUS les rébus d'une catégorie !
             </p>
             
             {/* CTA Button */}
@@ -48,7 +48,7 @@ export default function Home() {
         
         {/* Footer text */}
         <p className="text-gray-500 text-sm mt-6 sm:mt-8">
-          ⭐ Célébrités • 🦁 Animaux • 📱 Compatible mobile • 🆓 Gratuit
+          ⭐ Célébrités • 🦁 Animaux • 🌍 Pays • 📱 Compatible mobile • 🆓 Gratuit
         </p>
       </div>
     </div>

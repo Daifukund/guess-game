@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getRandomRebus, normalizeAnswer, type Rebus } from '@/data/rebus';
+import { getAllRebusByCategory, normalizeAnswer, type Rebus } from '@/data/rebus';
 
 function JeuGameComponent() {
   const searchParams = useSearchParams();
@@ -23,7 +23,7 @@ function JeuGameComponent() {
 
   useEffect(() => {
     if (categorie) {
-      const rebus = getRandomRebus(categorie, 5);
+      const rebus = getAllRebusByCategory(categorie);
       if (rebus.length === 0) {
         router.push('/categories');
         return;
@@ -78,7 +78,7 @@ function JeuGameComponent() {
 
   const resetGame = () => {
     if (categorie) {
-      const rebus = getRandomRebus(categorie, 5);
+      const rebus = getAllRebusByCategory(categorie);
       setGameRebus(rebus);
       setCurrentIndex(0);
       setScore(0);
@@ -117,10 +117,11 @@ function JeuGameComponent() {
 
   if (gameFinished) {
     const getScoreMessage = () => {
-      if (score === 5) return { emoji: "🏆", title: "PARFAIT !", message: "Incroyable ! Tu es un vrai expert !", color: "from-yellow-400 to-orange-400" };
-      if (score >= 4) return { emoji: "🌟", title: "EXCELLENT !", message: "Bravo ! Tu maîtrises bien !", color: "from-green-400 to-emerald-400" };
-      if (score >= 3) return { emoji: "👍", title: "BIEN JOUÉ !", message: "Pas mal du tout !", color: "from-blue-400 to-indigo-400" };
-      if (score >= 2) return { emoji: "😊", title: "C'est un début !", message: "Continue comme ça !", color: "from-purple-400 to-pink-400" };
+      const percentage = (score / gameRebus.length) * 100;
+      if (percentage === 100) return { emoji: "🏆", title: "PARFAIT !", message: "Incroyable ! Tu es un vrai expert !", color: "from-yellow-400 to-orange-400" };
+      if (percentage >= 80) return { emoji: "🌟", title: "EXCELLENT !", message: "Bravo ! Tu maîtrises bien !", color: "from-green-400 to-emerald-400" };
+      if (percentage >= 60) return { emoji: "👍", title: "BIEN JOUÉ !", message: "Pas mal du tout !", color: "from-blue-400 to-indigo-400" };
+      if (percentage >= 40) return { emoji: "😊", title: "C'est un début !", message: "Continue comme ça !", color: "from-purple-400 to-pink-400" };
       return { emoji: "💪", title: "Réessaye !", message: "Tu peux faire mieux !", color: "from-orange-400 to-red-400" };
     };
     
@@ -154,7 +155,7 @@ function JeuGameComponent() {
                 <span className={`bg-gradient-to-r ${scoreData.color} bg-clip-text text-transparent`}>
                   {score}
                 </span>
-                <span className="text-gray-600">/5</span>
+                <span className="text-gray-600">/{gameRebus.length}</span>
               </div>
               <p className="text-gray-600 text-sm">rébus trouvés</p>
             </div>
@@ -198,7 +199,7 @@ function JeuGameComponent() {
             <div className="flex items-center gap-2">
               <div className="text-2xl">🧩</div>
               <div className="text-sm sm:text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Rébus {currentIndex + 1}/5
+                Rébus {currentIndex + 1}/{gameRebus.length}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -211,12 +212,12 @@ function JeuGameComponent() {
           <div className="bg-white/20 rounded-full h-3 overflow-hidden">
             <div 
               className="bg-gradient-to-r from-indigo-500 to-purple-500 h-3 rounded-full transition-all duration-500 shadow-lg"
-              style={{ width: `${((currentIndex + 1) / 5) * 100}%` }}
+              style={{ width: `${((currentIndex + 1) / gameRebus.length) * 100}%` }}
             ></div>
           </div>
           <div className="flex justify-between mt-2 text-xs text-gray-500">
             <span>Début</span>
-            <span>{Math.round(((currentIndex + 1) / 5) * 100)}% complété</span>
+            <span>{Math.round(((currentIndex + 1) / gameRebus.length) * 100)}% complété</span>
             <span>Fin</span>
           </div>
         </div>
@@ -227,9 +228,11 @@ function JeuGameComponent() {
             <span className="text-xl sm:text-2xl">
               {categorie === 'celebrite' && '⭐'}
               {categorie === 'animal' && '🦁'}
-              {!['celebrite', 'animal'].includes(categorie || '') && '🔍'}
+              {categorie === 'pays' && '🌍'}
+              {!['celebrite', 'animal', 'pays'].includes(categorie || '') && '🔍'}
             </span>
-            {categorie === 'animal' ? 'Quel animal suis-je ?' : 'Qui suis-je ?'}
+            {categorie === 'animal' ? 'Quel animal suis-je ?' : 
+             categorie === 'pays' ? 'Quel pays suis-je ?' : 'Qui suis-je ?'}
           </div>
           <div className="relative w-full h-40 sm:h-48 md:h-64 lg:h-80 mb-3 sm:mb-4 md:mb-6 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 shadow-inner">
             <Image
@@ -294,7 +297,11 @@ function JeuGameComponent() {
                   onChange={(e) => setUserAnswer(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleValidate()}
                   className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm sm:text-base transition-all duration-300 shadow-sm"
-                  placeholder="Tapez le nom de la célébrité..."
+                  placeholder={
+                    categorie === 'animal' ? "Tapez le nom de l'animal..." :
+                    categorie === 'pays' ? "Tapez le nom du pays..." :
+                    "Tapez le nom de la célébrité..."
+                  }
                   autoFocus
                 />
               </div>
